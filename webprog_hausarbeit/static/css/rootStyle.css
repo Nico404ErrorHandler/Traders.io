@@ -1,0 +1,149 @@
+:root {
+    --backgroundNav: rgb(81, 174, 147);
+    --backgorundMain: #b5e48c;
+    --textColorNav: #f1faee;
+    --textColorNavHover: #000000;
+    --navButtonHoverColor: lightblue;
+    --fontColor: #f1faee;
+    --logoColor: #f1faee;
+    --typerColor: #f1faee;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    color: var(--fontColor);
+}
+nav {
+    background-color: var(--backgroundNav);
+    height: 80px;
+    width: 100%;
+    text-align: center;    
+}
+
+nav ul {
+    display: inline-block;
+    text-align: center;
+}
+.logo {
+    float: left;
+    color: var(--logoColor);
+    font-size: 40px;
+    font-weight:bolder;
+    line-height: 80px;
+    padding: 0 3vw;
+    font-weight: bold;
+    cursor: pointer;
+}
+.Main{
+    background: linear-gradient(90deg, rgba(86,189,160,1) 0%, rgba(92,219,149,1) 45%, rgba(86,189,160,1) 100%);
+    min-height: calc(100vh - 80px);
+    min-width: 100%;
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+a.active, a:hover {
+    color: var(--textColorNavHover);
+    background: var(--navButtonHoverColor);
+    transition: 0.4s;
+    height: 3vmin;
+}
+
+.hidden{
+    visibility: hidden;
+}
+
+#ankername, #login {
+    text-transform: none;
+}
+nav ul li {
+    max-height: 20px;
+    line-height: 20px;
+}
+nav ul li a {
+    color: var(--textColorNav);
+    text-transform: uppercase;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+/*SMARTPHONE-DESIGN*/
+@media only screen and (min-width: 768px) {
+    #touch {
+        visibility: hidden;
+    }
+    nav ul li {
+        display: inline-block;
+        max-height: 80px;
+        line-height: 80px;
+    }
+    
+    nav ul li a {
+        color: var(--textColorNav);
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    .login{
+        float: right;
+    }
+}
+
+/*TABLET-DESIGN*/
+@media only screen and (min-width: 1200px) {
+
+    nav ul li a {
+        padding: 7px 13px;
+        border-radius: 3px;
+        font-size: 18px;
+    }
+}
+@media (max-width: 768px){
+    .login {
+        display: inline-block;
+        align-items: center;
+        margin: 15px 0 0 0;
+    }
+
+    span {
+    color : white;
+    font-size : 3em;
+    cursor : pointer;
+    display: block;
+  }
+  
+  span::after {
+    margin: 10px 20px;
+    float: right;
+    right: 10%;
+    content: "+";
+  }
+  
+
+  
+  .slide {
+    clear:both;
+    float: right;
+    width:50%;
+    height:0px;
+    overflow: hidden;
+    text-align: right;
+    transition: height .4s ease;
+  }
+  
+  .slide li {padding : 20px;}
+  
+  #touch {position: absolute; opacity: 0; height: 0px;}    
+  
+  #touch:checked + .slide {height: 200px;} 
+  }

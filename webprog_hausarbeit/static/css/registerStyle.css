@@ -1,0 +1,145 @@
+
+.Main {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1.6fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-areas:
+        " . tit . "
+        " . frm . "
+        " . . . ";
+}
+
+#Title {
+    grid-area: tit;
+    align-self: center;
+    justify-self: center;
+}
+
+#Btn{
+    grid-area: btn;
+    display: grid;
+    align-self: center;
+    min-height: 35px;
+    grid-template-columns: 10fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: " . btn1 . btn2 .";
+}
+
+#RegisterButton{
+    grid-area: btn1;
+    min-width: 100px;
+}
+
+#RegisterAbort{
+    grid-area: btn2;
+    min-width: 100px;
+}
+
+#RegistrationForm {
+    grid-area: frm;
+    display: grid;
+    grid-template-columns: 1.4fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;
+    grid-template-areas:
+        " labelUsr usrInput"
+        " labelVnm vnmInput"
+        " labelNnm nnmInput"
+        " labelAlt altInput"
+        " labelEml emlInput"
+        " labelTnr tnrInput"
+        " labelWrt wrtInput"
+        " labelPwd pwdInput"
+        " labelImg imgInput"
+        " btn btn"
+    ;
+}
+
+.textBox{
+    min-height: 30px;
+    align-self: center;
+}
+
+#LabelUsername{
+    grid-area: labelUsr;
+    align-self: center;
+}
+
+#Username{
+    grid-area: usrInput;
+}
+
+#LabelFirstname{
+    grid-area: labelVnm;
+    align-self: center;
+}
+
+#Firstname{
+    grid-area: vnmInput;
+}
+
+#LabelLastname{
+    grid-area: labelNnm;
+    align-self: center;
+}
+
+#Lastname{
+    grid-area: nnmInput;
+}
+
+#LabelAge{
+    grid-area: labelAlt;
+    align-self: center;
+}
+
+#Age{
+    grid-area: altInput;
+}
+
+#LabelEmail{
+    grid-area: labelEml;
+    align-self: center;
+}
+
+#Email{
+    grid-area: emlInput;
+}
+
+#LabelMobilenumber{
+    grid-area: labelTnr;
+    align-self: center;
+}
+
+#Mobilenumber{
+    grid-area: tnrInput;
+}
+
+#LabelCity{
+    grid-area: labelWrt;
+    align-self: center;
+}
+
+#City{
+    grid-area: wrtInput;
+}
+
+#LabelPassword{
+    grid-area: labelPwd;
+    align-self: center;
+}
+
+#Password{
+    grid-area: pwdInput;
+}
+
+#LabelImage{
+    grid-area: labelImg;
+    align-self: center;
+}
+
+#Image{
+    grid-area: imgInput;
+    align-self: center;
+}
+
+
+
+

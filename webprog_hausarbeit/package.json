@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.1",
+    "formidable": "^2.0.1",
+    "fs": "0.0.1-security",
+    "node": "^17.2.0",
+    "path": "^0.12.7",
+    "sqlite3": "^5.0.2"
+  },
+  "name": "webprogrammierung",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

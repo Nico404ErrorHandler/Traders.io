@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/verleihenAddStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+    <title>Gegenstand hinzufügen</title>
+    <style>
+        h2 {
+            text-align: center;
+            padding: 5vh;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <label for="touch"><span></span></label>
+            <input type="checkbox" id="touch">
+            <ul class="slide" id="slide">
+                <li><a id="ausleihen" href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                <li><a id="verleihen" class="active"
+                        href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                <li><a id="ausgeliehen" href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a></li>
+                <li><a id="community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+            </ul>
+            <ul class="login">
+                <li class="login"><a id="login" href="http://localhost:8000/logout">Ausloggen</a></li>
+                <!-- Login zu Logout CSS beachten-->
+                <li id="register" class="login"><a id="ankername"
+                        href="http://localhost:8000/private/api/html/edituserprofile"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="Main" id="container">
+
+            <form class="form" onsubmit="send(event,this)" enctype="multipart/form-data">
+                <h2>Verleihe einen Gegenstand!</h2>
+                <label>Name:</label>
+                <input id="nametext" type="text" id="name" name="name">
+                <label>Verleihzeit in Tagen</label>
+                <input type="number" id="borrowtime" name="borrowtime">
+                <label>Beschreibung:</label>
+                <textarea class="form" id="description" name="description" cols="60" rows="15"></textarea>
+                <label>Bild:</label>
+                <input type="file" id="image" name="image">
+                <input type="submit" value="Speichern">
+                <input type="button" id="abort" value="Abbrechen">
+            </form>
+            <p class="registererror" id="registererror"></p>
+        </div>
+    </section>
+
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        // Hier wird mithilfe des Username cookies der Registrieren Button zum Username geaendert
+        let anker = document.getElementById("ankername");
+        const username = getCookie("Username");
+        anker.textContent = "Hallo, " + username;
+
+        //Abbrech-Button, um zur Verleihseite zurückzugelangen
+        let abort = document.getElementById("abort");
+
+        //Die Funktion erstellt ein Cookie-Array und trennt diese,
+        //damit man an die Username-Information kommt, die mit dem 
+        //Cookie gesendet wird
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        //EventListener für die Formular-Buttons
+        function send(e, form) {
+            e.preventDefault();
+            //Die zuvor festgelegten Daten werden an den Server gesendet
+            fetch("http://localhost:8000/private/api/items/" + username, {
+                method: "POST",
+                body: new FormData(form),
+            }).then(response => response.json()).then(response => itemAdded(response));
+        }
+
+        //Funktion - Wenn der Gegenstand erfolgreich hinzugefügt wurde, antwortet der Server mit true,
+        //sodass man wieder zur "verleihen"-Seite redirected wird
+        function itemAdded(response) {
+            let state = response.status;
+            if (state) {
+                window.location.href = "http://localhost:8000/private/api/html/verleihen";
+            } else {
+                let error = document.getElementById("registererror");
+                error.innerHTML = response.text;
+            }
+        }
+
+        //Eventlistener für den Abbruch-Button
+        abort.addEventListener("click", function () {
+            window.location.href = "http://localhost:8000/private/api/html/verleihen";
+        });
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+    </script>
+
+</body>
+
+</html>

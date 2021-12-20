@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/ausgeliehenStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+    <title>Ausgeliehen</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <label for="touch"><span></span></label>
+            <input type="checkbox" id="touch">
+            <ul class="slide" id="slide">
+                <li><a id="ausleihen" href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                <li><a id="verleihen" href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                <li><a id="ausgeliehen" class="active"
+                        href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a></li>
+                <li><a id="community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+            </ul>
+            <ul class="login">
+                <li class="login"><a id="login" href="http://localhost:8000/logout">Ausloggen</a></li>
+                <li id="register" class="login"><a id="ankername"
+                        href="http://localhost:8000/private/api/html/edituserprofile"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <section>
+        <div class="Main" id="container">
+            <h2>Hier sind die Gegenstände, die du gerade ausgeliehen hast...</h2>
+            <ul class="flex-container-borrowed" id="flex-ul-borrowed">
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        // Hier wird mithilfe des Username cookies der Registrieren Button zum Username geaendert
+        let anker = document.getElementById("ankername");
+        const username = getCookie("Username");
+        anker.textContent = "Hallo, " + username;
+
+        //Variable Allgemein
+        let loginname = document.getElementById("loginname");
+        let flex_ul = document.getElementById("flex-ul-borrowed");
+
+        fetchLentItems(username);
+
+        //Die Funktion erstellt ein Cookie-Array und trennt diese,
+        //damit man an die Username-Information kommt, die mit dem 
+        //Cookie gesendet wird
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        //Alle ausgeliehenen Gegenstaende werde hiermit gefetched. Die genutzte Funktion liefert alle vom User ausgeliehenen Gegenstaende
+        function fetchLentItems(username) {
+            fetch('http://localhost:8000/private/api/html/ausgeliehen/' + username)
+                .then(response => response.json())
+                .then(response => loadLentItems(response));
+        }
+
+        //Die Fetchdaten werden hier zu sichtbaren Artikeln, sollten welche als vom User ausgeliehen markiert sein, ansonsten gibt es eine Nachricht
+        function loadLentItems(response) {
+            let ul = document.getElementById("flex-ul-borrowed")
+            if (response.length == 0) {
+                let noLentLi = document.createElement("li");
+                let noLentLabel = document.createElement("h4");
+                noLentLabel.textContent = "Du hast momentan keine Gegenstände ausgeliehen!";
+                noLentLabel.style.color = "black";
+                noLentLabel.style.fontSize = "16px";
+                ul.appendChild(noLentLi);
+                noLentLi.appendChild(noLentLabel);
+            } else {
+                response.forEach(function (article) {
+                    let borrowedonDate = new Date(Math.floor(article.borrowedon)).toISOString().slice(0, 10);
+                    let borrowedtilDate = new Date(Math.floor(article.borrowedtil)).toISOString().slice(0, 10);
+
+                    let item = document.createElement("li");
+                    let name = document.createElement("h3");
+                    let provider = document.createElement("h4");
+                    let borrowedon = document.createElement("h4");
+                    let borrowedtil = document.createElement("h4");
+                    let remainingTime = document.createElement("h4");
+                    let image = document.createElement("img");
+                    let deleteButton = document.createElement("input");
+                    deleteButton.type = "button";
+                    deleteButton.value = "Zurückgeben";
+                    deleteButton.onclick = function () { returnItem(article.id) };
+                    name.textContent = "Artikel: " + article.name;
+                    provider.textContent = "Anbieter: " + article.provider;
+                    borrowedon.textContent = "Ausgeliehen am: " + borrowedonDate;
+                    borrowedtil.textContent = "Ausgeliehen bis: " + borrowedtilDate;
+                    remainingTime.textContent = "Resttage: " + dateCalc(article.borrowedon, article.borrowedtil);
+                    image.setAttribute("src", article.image);
+                    item.onclick = "";
+                    item.className = "flex-item-borrowed";
+                    if (dateCalc(article.borrowedon, article.borrowedtil) < 4) {
+                        item.style.backgroundColor = "orange";
+                    }
+                    if (dateCalc(article.borrowedon, article.borrowedtil) < 2) {
+                        item.style.backgroundColor = "red";
+                    }
+                    flex_ul.appendChild(item);
+                    item.appendChild(image);
+                    item.appendChild(name);
+                    item.appendChild(provider);
+                    item.appendChild(borrowedon);
+                    item.appendChild(borrowedtil);
+                    item.appendChild(remainingTime);
+                    item.appendChild(deleteButton);
+                })
+            }
+        }
+
+        //Hier werden die verbliebenen Tage errechnet, indem das
+        //borrowedtil-Datum vom heutigem abgezogen,
+        //in Tage umgerechnet wird und mit Math.floor gerundet wird
+        function dateCalc(borrowedon, borrowedtil) {
+            let d2 = borrowedtil;
+            let d1 = borrowedon;
+            let remainingDays = d2 - d1;
+            return Math.floor(remainingDays / (1000 * 3600 * 24));
+        }
+
+        //return Item
+        function returnItem(id) {
+            fetch('http://localhost:8000/private/api/return/' + id, {
+                method: "POST",
+                headers: { 'Content-type': 'application/json; charset=UTF-8' },
+            })
+                .then(response => response.json())
+                .then(response => fetchLentItems());
+            location.reload();
+            return false;
+        }
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+    </script>
+
+</body>
+
+</html>

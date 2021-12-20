@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/registerStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+    <title>Registrierung</title>
+    <style>
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <ul>
+                <div class="hidden">
+                    <li><a id="Ausleihen" href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                    <li><a id="Verleihen" href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                    <li><a id="Ausgeliehen" href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a>
+                    </li>
+                    <li><a id="Community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+                </div>
+            </ul>
+            <ul class="login">
+                <li id="loginButtonNav"><a href="http://localhost:8000/api/html/login">Login</a></li>
+                <li id="registerButtonNav"><a href="http://localhost:8000/api/html/register">Registrieren</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="Main">
+        <h2 id="Title">Registrierung</h2>
+        <form id="RegistrationForm" onsubmit="send(event,this)" enctype="multipart/form-data">
+            <label id="LabelUsername">Benutzername:</label>
+            <input class="textBox" type="text" id="Username" name="username">
+
+            <label id="LabelFirstname">Vorname:</label>
+            <input class="textBox" type="text" id="Firstname" name="firstname">
+
+            <label id="LabelLastname">Nachname:</label>
+            <input class="textBox" type="text" id="Lastname" name="lastname">
+
+            <label id="LabelAge">Alter:</label>
+            <input class="textBox" type="number" id="Age" name="age">
+
+            <label id="LabelEmail">Email:</label>
+            <input class="textBox" type="email" id="Email" name="email">
+
+            <label id="LabelMobilenumber">Telefon Nr.:</label>
+            <input class="textBox" type="number" id="Mobilenumber" name="mobilenumber">
+
+            <label id="LabelCity">Wohnort:</label>
+            <input class="textBox" type="text" id="City" name="city">
+
+            <label id="LabelPassword">Passwort:</label>
+            <input class="textBox" type="password" id="Password" name="password">
+
+            <label id="LabelImage"> Profilbild:</label>
+            <input type="file" id="Image" name="image">
+
+            <div id="Btn">
+                <input type="submit" id="RegisterButton" value="Registrieren">
+                <input type="button" id="RegisterAbort" value="Abbrechen">
+            </div>
+        </form>
+        <p id="RegisterError"></p>
+    </div>
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        //Buttons Registrierungsformular
+        let abortForm = document.getElementById("RegisterAbort");
+
+        //Variablen Allgemein
+        let registrationform = document.getElementById("RegistrationForm");
+        let username = document.getElementById("Username")
+
+        //Eventlistener für die Registrierungsbuttons
+        function send(e, form) {
+            e.preventDefault();
+            //Die zuvor festgelegten Daten werden an den Server gesendet
+            fetch("http://localhost:8000/api/authenticate/register/" + username.value, {
+                method: "POST",
+                body: new FormData(form),
+            }).then(response => response.json()).then(response => registration(response));
+        }
+
+        // Hier wird die Antwort vom Server bearbeitet
+        function registration(response) {
+            let state = response.status;
+            let registererror = document.getElementById("RegisterError");
+            //Falls der Status true ist, wird das Fomurlar gelöscht und ein Text mit Hyperlink erstellt
+            if (state) {
+                registrationform.innerHTML = `
+                    <div id="RegistrationSuccess">
+                        <p>Registrierung war erfolgreich.</p>
+                        <a href="http://localhost:8000/api/html/login">Hier weiter zum Login</a>
+                    </div>
+                `;
+            } else {
+                //Falls false wird eine rote Schrift unters Formular hinzugefügt,
+                //um den Benutzer zu signalisieren, dass der Benutzername bereits verwendet wird
+                registererror.textContent = response.text;
+            }
+        }
+
+        // Abbruch-Button um das Formular abzubrechen und um zur Startseite
+        // weitergeleitet zu werden
+        abortForm.addEventListener("click", function () {
+            window.location.href = "http://localhost:8000/";
+            console.log("Abbruch");
+        });
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+body, html {
+    background: linear-gradient(90deg, rgba(86,189,160,1) 0%, rgba(92,219,149,1) 45%, rgba(86,189,160,1) 100%);
+    height: 100%;
+    width: 100%;
+}
+.Main{
+    background: linear-gradient(90deg, rgba(86,189,160,1) 0%, rgba(92,219,149,1) 45%, rgba(86,189,160,1) 100%);
+    min-height: calc(100vh - 80px);
+    min-width: 100%;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    padding-top: 2vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#container{
+    text-align: center;
+    padding: 3vh;
+}
+#container > a {
+    font-size: 20px;
+}
+
+h2{
+    text-align: center;
+    font-size: 20px;
+}
+
+.item-container{
+    justify-content: center;
+    border-width: 1px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.form{
+    justify-content: center;
+    padding: 0 0 0 0;
+    margin: 0 auto auto auto;
+    font-size: 1em;
+    width: 80vmin;
+}
+.form label {
+    float: left;
+}
+#nametext {
+    width: 80vmin;
+}
+#borrowtime {
+    width: 80vmin;
+}
+
+.form textarea {
+    width: 80vmin;
+    height: 20vmin;
+}
+
+.form img {
+    width: 80vmin;
+    height: 36vmin;
+    margin: auto;
+}
+
+@media only screen and (min-width: 768px) {
+    h2 {
+        font-size: 1em;
+    }
+    .form label {
+        font-size: 1em;
+    }
+    .form img {
+        width: 36vmin;
+        height: 36vmin;
+        margin: auto;
+    }
+    .form textarea {
+        width: 36vmin;
+        height: 20vmin;
+    }
+    .form {
+        width: 36vmin;
+    }
+    #nametext {
+        width: 36vmin;
+    }
+    #borrowtime {
+        width: 36vmin;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+}

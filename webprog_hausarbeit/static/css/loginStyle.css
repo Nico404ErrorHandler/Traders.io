@@ -1,0 +1,83 @@
+.btn {
+    width: 100px;
+    max-height: 40px;
+}
+
+.title {
+    grid-area: h2;
+    margin-right: -25%;
+    align-self: center;
+    text-align: center;
+}
+
+.Main {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.4fr;
+    grid-template-rows: 8fr 2fr 2fr 2fr 1fr 2fr 8fr;
+    grid-template-areas:
+        ". . ."
+        ". h2 ."
+        ". usr ."
+        ". pwd ."
+        ". btn ."
+        ". msg ."
+        ". . .";
+}
+
+#Message {
+    grid-area: msg;
+    align-self: center;
+    text-align: right;
+}
+
+#BtnField {
+    grid-area: btn;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    grid-template-areas: ". btn1 btn2";
+    justify-content: space-evenly;
+}
+
+#BtnLogin {
+    grid-area: btn1;
+}
+
+#BtnRegister {
+    grid-area: btn2;
+}
+
+#UsrField {
+    grid-area: usr;
+    display: grid;
+    grid-template-columns: 1.2fr 2fr;
+    grid-template-areas: "usrLabel usrInput";
+    max-height: 40px;
+}
+
+#UsrLabel {
+    grid-area: usrLabel;
+    align-self: center;
+    justify-self: left;
+}
+
+#UsrInput {
+    grid-area: usrInput;
+}
+
+#PwdField {
+    grid-area: pwd;
+    display: grid;
+    grid-template-columns: 1.2fr 2fr;
+    grid-template-areas: "pwdLabel pwdInput";
+    max-height: 40px;
+}
+
+#PwdLabel {
+    grid-area: pwdLabel;
+    align-self: center;
+    justify-self: left;
+}
+
+#PwdInput {
+    grid-area: pwdInput;
+}

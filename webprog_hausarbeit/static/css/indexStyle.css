@@ -1,0 +1,50 @@
+.Main{
+    display: grid;
+    grid-template-rows: 1fr 3fr 1fr;
+    grid-template-areas: 
+    "."
+    "typer"
+    ".";    
+}
+#MainTyper{
+    grid-area: typer;
+    align-self: center;
+    margin: auto;
+}
+
+#Paket {
+    grid-area: tex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#Bar {
+    display: inline-block;
+    width: 4px;
+    height: 5rem;
+    background-color: var(--typerColor);
+    margin-left: 8px;
+    animation: blink .45s linear infinite alternate;
+}
+
+#Text {
+    font-size: 5rem;
+    color: var(--typerColor);
+    white-space: nowrap;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}

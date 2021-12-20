@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/ausleihStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+    <title>Ausleihen</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <label for="touch"><span></span></label>
+            <input type="checkbox" id="touch">
+            <ul class="slide" id="slide">
+                <li><a id="ausleihen" class="active"
+                        href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                <li><a id="verleihen" href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                <li><a id="ausgeliehen" href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a></li>
+                <li><a id="community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+            </ul>
+            <ul class="login">
+                <li class="login"><a id="login" href="http://localhost:8000/logout">Ausloggen</a></li>
+                <!-- Login zu Logout CSS beachten-->
+                <li id="register" class="login"><a id="ankername"
+                        href="http://localhost:8000/private/api/html/edituserprofile"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="Main">
+        <h2 id="Ueberschrift">Gegenstände ausleihen</h2>
+        <div id="container">
+            <ul class="flex-container-borrow" id="flex-ul-borrow">
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        // Hier wird mithilfe des Username cookies der Registrieren Button zum Username geaendert
+        let anker = document.getElementById("ankername");
+        const username = getCookie("Username");
+        anker.textContent = "Hallo, " + username;
+
+        //Die Variablen dienen dazu Informationen des Container-Divs zu speichern
+        //und diese bei Bedarf wieder auszugeben.
+        let container = document.getElementById("container");
+        var saveContainer = container.innerHTML;
+
+        //Import der Html Container
+        let loginname = document.getElementById("loginname");
+        let flex_ul = document.getElementById("flex-ul-borrow");
+
+        fetchAllItems();
+
+        //Die Funktion erstellt ein Cookie-Array und trennt diese,
+        //damit man an die Username-Information kommt, die mit dem 
+        //Cookie gesendet wird
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        //Alle nicht momentan ausgeliehen Items von Freunden werden gefetcht
+        function fetchAllItems() {
+            fetch('http://localhost:8000/private/api/html/ausleihen/' + username, {
+                method: "POST",
+                headers: { "Content-Type": "application/json; Charset-UTF8" }
+            })
+                .then(response => response.json())
+                .then(response => loadAllItems(response));
+        }
+
+        //Alle Items werden in die Html geschrieben sofern welche existieren
+        //Die Objekte werden in einem zweidimensionalen Array übergeben, weshalb die gesamte Struktur durchlaufen wird
+        function loadAllItems(response) {
+            for (let i = 0; i < response.length; i++) {
+                for (let j = 0; j < response[i].length; j++) {
+                    let article = response[i][j];
+                    let item = document.createElement("li");
+
+                    let name = document.createElement("h3");
+                    name.textContent = article.name;
+
+                    let description = document.createElement("h4");
+                    description.textContent = article.description;
+
+                    let provider = document.createElement("h4");
+                    provider.textContent = "Anbieter: " + article.provider;
+
+                    let image = document.createElement("img");
+                    image.setAttribute("src", article.image);
+                    image.id = "ProductImage";
+
+                    let providerimage = document.createElement("img");
+                    providerimage.setAttribute("src", article.providerimage);
+                    providerimage.className = "flex-image-borrow";
+
+                    item.onclick = function () { fetchSelectedItem(article.id) };
+                    item.className = "flex-item-borrow";
+
+                    flex_ul.appendChild(item);
+                    item.appendChild(image);
+                    item.appendChild(name);
+                    item.appendChild(description);
+                    item.appendChild(provider);
+                    item.appendChild(providerimage);
+                }
+            }
+        }
+
+        //Ein Artikel mit einer bestimmten Id wird gefetcht, um einen angeklickten Artikel Hervorzuheben
+        function fetchSelectedItem(id) {
+            fetch('http://localhost:8000/private/api/items/' + id)
+                .then(response => response.json())
+                .then(response => loadSelectedItem(response));
+        }
+
+        //Ein angeklickter Artikel wird hervorgehoben und mit einem Knopf zum ausleihen versehen
+        //der Knopf gibt der Datenbank die Informationen wer welchen Artikel ausgeliehen hat
+        function loadSelectedItem(response) {
+
+            container.removeChild(flex_ul);
+            let article = response;
+            let item = document.createElement("li");
+
+            let name = document.createElement("h3");
+            name.textContent = article.name;
+
+            let description = document.createElement("h4");
+            description.textContent = article.description;
+
+            let provider = document.createElement("h4");
+            provider.textContent = "Anbieter: " + article.provider;
+
+            let image = document.createElement("img");
+            image.setAttribute("src", article.image);
+            image.id = "ProductImage";
+
+            let providerimage = document.createElement("img");
+            providerimage.setAttribute("src", article.providerimage);
+            providerimage.className = "flex-image-borrow";
+
+            let textarea = document.createElement("textarea");
+
+            item.className = "flex-item-borrow";
+
+            item.appendChild(image);
+            item.appendChild(name);
+            item.appendChild(description);
+            item.appendChild(provider);
+            item.appendChild(providerimage);
+            item.appendChild(textarea);
+
+            let button = document.createElement("button");
+            button.value = "Ausleihen";
+            button.innerText = "Ausleihen"
+            button.addEventListener("click", function () {
+                let message = textarea.value;
+                console.log(message);
+                fetch("http://localhost:8000/private/api/borrow/" + article.id + "/" + username, {
+                    method: "POST",
+                    body: JSON.stringify(message),
+                    headers: { "Content-Type": "application/json; Charset-UTF8" }
+                })
+                    .then(reload());
+            });
+
+            container.appendChild(item);
+            container.appendChild(button);
+        }
+
+        //Funktion um die Seite neuzuladen
+        function reload() {
+            container = document.getElementById("container");
+            container.innerHTML = saveContainer;
+            location.reload();
+            return false;
+        }
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/verleihenStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+    <title>Verleihen</title>
+    <style>
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <label for="touch"><span></span></label>
+            <input type="checkbox" id="touch">
+            <ul class="slide" id="slide">
+                <li><a id="ausleihen" href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                <li><a id="verleihen" class="active"
+                        href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                <li><a id="ausgeliehen" href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a></li>
+                <li><a id="community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+            </ul>
+            <ul class="login">
+                <li class="login"><a id="login" href="http://localhost:8000/logout">Ausloggen</a></li>
+                <li id="register" class="login"><a id="ankername"
+                        href="http://localhost:8000/private/api/html/edituserprofile"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <section>
+        <div id="container" class="Main">
+            <ul class="flex-ul-lend" id="flex-ul-lend">
+                <h2>Hier werden Ihre angebotenen Gegenstände angezeigt</h2>
+                <a id="AddItem" href="http://localhost:8000/private/api/html/verleihenAdd">Neuen Gegenstand
+                    verleihen!</a>
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        // Hier wird mithilfe des Username cookies der Registrieren Button zum Username geaendert
+        let anker = document.getElementById("ankername");
+        const username = getCookie("Username");
+        anker.textContent = "Hallo, " + username;
+
+        //Die Variablen dienen dazu Informationen des Container-Divs zu speichern
+        //und diese bei Bedarf wieder auszugeben.
+        let container = document.getElementById("container");
+        var saveContainer = container.innerHTML;
+
+        //Variablen Allgemein
+        let loginname = document.getElementById("loginname");
+        let flex_ul_lend = document.getElementById("flex-ul-lend");
+
+        fetchItems(username);
+
+        //Die Funktion erstellt ein Cookie-Array und trennt diese,
+        //damit man an die Username-Information kommt, die mit dem 
+        //Cookie gesendet wird
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        // Die Funktion fetchItems sendet dem Server über den Fetch
+        // den Namen der in Provider gespeichert ist, damit die zugehörigen
+        // Gegenstände angezeigt werden
+        function fetchItems(username) {
+            fetch('http://localhost:8000/private/api/html/verleihen/' + username,)
+                .then(response => response.json())
+                .then(response => loadItems(response));
+        }
+
+        // Hier wird die Response des Servers behandelt, die alle Artikel des
+        // Providers bereithält. Über eine ForEach-Schleife werden die Artikel
+        // einzelnd erstetllt und angezeigt.
+        function loadItems(response) {
+            let ul = document.getElementById("flex-ul-lend")
+            if (response.length == 0) {
+                let noLendItemLabel = document.createElement("h3");
+                noLendItemLabel.textContent = "Du verleihst momentan keine Gegenstände";
+                noLendItemLabel.style.color = "black";
+                ul.appendChild(noLendItemLabel);
+            } else {
+                response.forEach(function (article) {
+                    let item = document.createElement("li");
+                    let headline = document.createElement("h3");
+                    let provider = document.createElement("h4");
+                    let lentTo = document.createElement("h4");
+                    let description = document.createElement("p");
+                    let image = document.createElement("img");
+                    let deleteButton = document.createElement("input");
+                    let editButton = document.createElement("input");
+                    deleteButton.type = "button";
+                    deleteButton.value = "löschen";
+                    deleteButton.onclick = function () { deleteItem(article.id) };
+                    editButton.type = "button";
+                    editButton.value = "bearbeiten";
+                    editButton.onclick = function () { getEditArticle(article.id) };
+                    headline.textContent = "Artikel: " + article.name;
+                    provider.textContent = "Anbieter: " + article.provider
+                    lentTo.textContent = "Verliehen an: " + article.lentTo;
+                    lentTo.style.color = "black";
+                    description.textContent = "Beschreibung: " + article.description;
+                    image.setAttribute("src", article.image);
+                    item.onclick = "";
+                    item.className = "flex-item";
+                    flex_ul_lend.appendChild(item);
+                    item.appendChild(image);
+                    item.appendChild(headline);
+                    item.appendChild(provider);
+                    item.appendChild(lentTo);
+                    item.appendChild(description);
+                    item.appendChild(editButton);
+                    item.appendChild(deleteButton);
+                })
+            }
+        }
+
+        //Sendet dem Server den Befehl den zuvor ausgewählten Artikel zu löschen
+        function deleteItem(id) {
+            fetch('http://localhost:8000/private/api/items/' + id, {
+                method: "DELETE"
+            })
+                .then(response => response.json())
+                .then(response => fetchItems());
+            location.reload();
+            return false;
+        }
+
+        //Erfragt vom Server die Informationen zum ausgewählten Artikel
+        //und zeigt diesen mit updateArticle an
+        function getEditArticle(id) {
+            fetch('http://localhost:8000/private/api/items/edit/' + id)
+                .then(response => response.json())
+                .then(response => updateArticle(response));
+        }
+
+        //Zeigt das "Bearbeitungs-Formular" an, welches in der Response des Servers sendet wird
+        function updateArticle(response) {
+            container.innerHTML = response.text;
+        }
+
+        //Sendet dem Server die neuen Informationen zum ändern des Artikels
+        function editArticle(e, form) {
+            e.preventDefault();
+            let id = document.getElementById("id");
+            fetch("http://localhost:8000/private/api/items/" + id.value, {
+                method: "PUT",
+                body: new FormData(form)
+            }).then(response => reload())
+        }
+
+        //Funktion um die Seite neuzuladen
+        function reload() {
+            container = document.getElementById("container");
+            container.innerHTML = saveContainer;
+            location.reload();
+            return false;
+        }
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+
+    </script>
+
+</body>
+
+</html>

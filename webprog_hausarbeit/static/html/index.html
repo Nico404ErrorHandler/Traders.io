@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8000/api/css/rootStyle" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8000/api/css/indexStyle" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
+
+    <title>Traders.io</title>
+    <style>
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <label class="logo" onclick="javascript:redirectHomeLabel()">Traders.io</label>
+            <ul>
+                <div class="hidden">
+                    <li><a id="Ausleihen" href="http://localhost:8000/private/api/html/ausleihen">Ausleihen</a></li>
+                    <li><a id="Verleihen" href="http://localhost:8000/private/api/html/verleihen">Verleihen</a></li>
+                    <li><a id="Ausgeliehen" href="http://localhost:8000/private/api/html/ausgeliehen">Ausgeliehen</a>
+                    </li>
+                    <li><a id="Community" href="http://localhost:8000/private/api/html/community">Community</a></li>
+                </div>
+            </ul>
+            <ul class="login">
+                <li id="login" class="login"><a href="http://localhost:8000/api/html/login">Login</a></li>
+                <li id="register" class="login"><a href="http://localhost:8000/api/html/register">Registrieren</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="Main">
+    </div>
+
+    <script>
+        // die neuste Version von js
+        "use strict";
+
+        //Variable Allgemein
+        let loginname = document.getElementById("loginname");
+
+        //Redirect zur Startseite, wenn man aufs Label "Traders" klickt
+        function redirectHomeLabel() {
+            window.location.href = "http://localhost:8000/";
+        }
+
+        // ---------------- Typing Logik ----------------
+        var main = document.querySelector('.Main')
+        var mainTyper = document.createElement("DIV")
+        mainTyper.id = "MainTyper"
+        var paket = document.createElement("DIV")
+        paket.id = "Paket"
+        var text = document.createElement("DIV")
+        text.id = "Text"
+        text.innerHTML = "Beispiel"
+        var bar = document.createElement("DIV")
+        bar.id = "Bar"
+
+        paket.appendChild(text)
+        paket.appendChild(bar)
+        mainTyper.appendChild(paket)
+        main.appendChild(mainTyper);
+
+        //MAIN SCHRIFTZUG KONSOLE
+
+        const texte = ["Wilkommen auf Traders.io", "Du willst lieber leihen statt kaufen ?", "Oder hast du selbst etwas zu verleihen ?", "Dann bist du hier genau richtig!", "Unser Motto lautet: Sharing is caring !", "Euer Julian, Michael und Nico"]
+        let currentWord = " ";
+        let letter = " ";
+        let wordCounter = 0;
+        let charCounter = 0;
+        let umkehren = false;
+
+        (function schreibe() {
+
+            // Wiederholt die Sätze sollten alle durch sein.
+            if (wordCounter === texte.length) {
+                wordCounter = 0;
+            }
+
+            //Sobald der volle String ausgegeben wurde, wird ein boolean zum Umkehren auf true gesetzt. 
+            if (umkehren == false) {
+                currentWord = texte[wordCounter];
+                letter = currentWord.slice(0, charCounter++);
+                document.getElementById("Text").innerHTML = letter;
+
+                if (letter.length === currentWord.length) {
+                    wordCounter++;
+                    setTimeout(schreibe, 1000)
+                    umkehren = true;
+                } else {
+                    setTimeout(schreibe, 75)
+                }
+
+            } else {
+                letter = currentWord.slice(0, charCounter-- - 1);
+                document.getElementById("Text").innerHTML = letter;
+
+                if (charCounter == 0) {
+                    umkehren = false;
+                    setTimeout(schreibe, 1000)
+                } else {
+                    setTimeout(schreibe, 45);
+                }
+            }
+        }());
+
+    </script>
+
+</body>
+
+</html>
